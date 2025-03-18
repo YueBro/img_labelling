@@ -31,8 +31,6 @@ class MyDataLoader(DataLoaderBase):
 
 dataloader = MyDataLoader(r"E:\images", do_recursive=True, filter_fn=lambda p: p.endswith(".jpg"))
 data_storage = DataStorage(dataloader)
-print(f"{len(data_storage)=}")
-data_storage.set_label(0, 123)
 
 start_app(data_storage, [
     LabelButtonInfo("左变道", 1, 'u'),
