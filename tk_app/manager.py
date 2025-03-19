@@ -63,6 +63,7 @@ class Manager:
         new_size = (self.wgs.win.winfo_height(), self.wgs.win.winfo_width())
         if new_size != self.stat.win_size:
             self.stat.win_size = new_size
+            self._refresh(forced=True)
         # print(event, self.stat.win_size)
     
     def recall_jump_button_press(self):
@@ -87,8 +88,9 @@ class Manager:
 
         has_label, img_path, label = self.data_storage.get_info(self.stat.display_idx)
         label_idx = self._find_button_idx_by_label_val(label)
+        img_max_size = (self.wgs.img_displayer.winfo_width(), self.wgs.img_displayer.winfo_height())
 
-        refresh_img(self.wgs.img_displayer, img_path, self.cacher, "display_image", (500, 500))
+        refresh_img(self.wgs.img_displayer, img_path, self.cacher, "display_image", img_max_size)
         self._highlight_button(label_idx)
         self._update_notification()
 

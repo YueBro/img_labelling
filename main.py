@@ -32,7 +32,7 @@ class MyDataLoader(DataLoaderBase):
 dataloader = MyDataLoader(r"E:\images", do_recursive=True, filter_fn=lambda p: p.endswith(".jpg"))
 data_storage = DataStorage(dataloader)
 
-start_app(data_storage, [
+label_button_infos = [
     LabelButtonInfo("左变道", 1, 'u'),
     LabelButtonInfo("保持车道", 2, 'i'),
     LabelButtonInfo("右变道", 3, 'o'),
@@ -40,4 +40,6 @@ start_app(data_storage, [
     LabelButtonInfo("直行", 5, 'k'),
     LabelButtonInfo("右转", 6, 'l'),
     LabelButtonInfo("掉头", 7, 'm'),
-])
+]
+
+start_app(data_storage, label_button_infos)
