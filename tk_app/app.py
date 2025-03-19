@@ -1,15 +1,15 @@
 import tkinter as tk
 
 from mods.data_storage import DataStorage
-from .manager import Manager, Widgets
-from .data_cls import LabelButtonInfo
+from .manager import Manager
+from .data_cls import LabelButtonInfo, Widgets, Datas
 from .cacher import Cacher
-from .consts import BUTTONS_WIDTH
+from .consts import BUTTONS_WIDTH, JUMP_ENTRY_WIDTH, JUMP_BUTTON_WIDTH
 
 from typing import List, Tuple
 
 
-def start_app(data_storage: DataStorage, label_button_infos: List[LabelButtonInfo],
+def start_app(data_storage: DataStorage, label_button_infos: List[LabelButtonInfo], storage_save_path: str,
               win_size: Tuple[int, int]=(1200, 800)):
     win = tk.Tk()
     win.geometry(f"{win_size[0]}x{win_size[1]}")
@@ -29,13 +29,13 @@ def start_app(data_storage: DataStorage, label_button_infos: List[LabelButtonInf
         buttons.append(button)
 
     lower_frm = tk.Frame(win, background="blue")
-    lower_frm.place(x=0, rely=1.0, y=-30, height=30)
-    notify_bar = tk.Label(lower_frm, width=win_size[0], height=1, background="orange", anchor="w")
-    notify_bar.pack(side="left", fill='both')
-    jump_button = tk.Button(lower_frm, text="jump")
-    jump_button.pack(side="right", fill='both')
+    lower_frm.place(x=0, rely=1.0, y=-30, relwidth=1.0, height=30)
+    notify_bar = tk.Label(lower_frm, width=win_size[0], background="orange", anchor="w")
+    notify_bar.place(x=0, y=0, relwidth=1.0, width=-(JUMP_ENTRY_WIDTH+JUMP_BUTTON_WIDTH), relheight=1.0)
     jump_entry = tk.Entry(lower_frm)
-    jump_entry.pack(side="right", fill='both')
+    jump_entry.place(relx=1.0, x=-(JUMP_ENTRY_WIDTH+JUMP_BUTTON_WIDTH), y=0, width=JUMP_ENTRY_WIDTH, relheight=1.0)
+    jump_button = tk.Button(lower_frm, text="jump")
+    jump_button.place(relx=1.0, x=-JUMP_BUTTON_WIDTH, y=0, width=JUMP_BUTTON_WIDTH, relheight=1.0)
 
     win.update()  # widget's sizes can obtain after win.update()
     wgs = Widgets(
@@ -46,8 +46,11 @@ def start_app(data_storage: DataStorage, label_button_infos: List[LabelButtonInf
         jump_entry=jump_entry,
         jump_button=jump_button,
     )
+    datas = Datas(
+        storage_save_path=storage_save_path,
+    )
     cacher = Cacher(win)
-    mgr = Manager(data_storage, label_button_infos, wgs, cacher)
+    mgr = Manager(data_storage, label_button_infos, wgs, datas, cacher)
     win.bind("<KeyPress>", mgr.recall_key_press)
     win.bind("<KeyRelease>", mgr.recall_key_release)
     win.bind("<Configure>", mgr.recall_window_config)  # trigger when move or resize window

@@ -15,6 +15,11 @@ class Widgets:
 
 
 @dataclass
+class Datas:
+    storage_save_path: str
+
+
+@dataclass
 class LabelButtonInfo:
     label_str: str
     label_val: Any

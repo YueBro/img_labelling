@@ -20,6 +20,8 @@ class MyDataLoader(DataLoaderBase):
                 self.paths.append(path)
             if not do_recursive:
                 break
+        if len(self.paths) == 0:
+            raise RuntimeError(f"No data found!")
         self.paths.sort()
 
     def get_data(self, idx: int) -> Any:
@@ -29,8 +31,13 @@ class MyDataLoader(DataLoaderBase):
         return len(self.paths)
 
 
-dataloader = MyDataLoader(r"E:\images", do_recursive=True, filter_fn=lambda p: p.endswith(".jpg"))
-data_storage = DataStorage(dataloader)
+LABEL_RESULT: Optional[str] = r"D:\Downloads\新建文件夹 (2)\manual_label_result.pkl"
+
+if (LABEL_RESULT is None) or (not osp.exists(LABEL_RESULT)):
+    dataloader = MyDataLoader(r"D:\Downloads\新建文件夹 (2)\可视化-基线", do_recursive=True, filter_fn=lambda p: p.endswith(".jpg"))
+    data_storage = DataStorage(dataloader)
+else:
+    data_storage = DataStorage.load(LABEL_RESULT)
 
 label_button_infos = [
     LabelButtonInfo("左变道", 1, 'u'),
@@ -42,4 +49,4 @@ label_button_infos = [
     LabelButtonInfo("掉头", 7, 'm'),
 ]
 
-start_app(data_storage, label_button_infos)
+start_app(data_storage, label_button_infos, LABEL_RESULT)

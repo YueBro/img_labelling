@@ -2,7 +2,7 @@ import tkinter as tk
 from dataclasses import dataclass
 
 from mods.data_storage import DataStorage
-from .data_cls import Widgets, LabelButtonInfo
+from .data_cls import Widgets, LabelButtonInfo, Datas
 from .widget_opers import refresh_img
 from .cacher import Cacher
 
@@ -24,7 +24,7 @@ class _Stat:
 
 class Manager:
     def __init__(self, data_storage: DataStorage, label_button_infos: List[LabelButtonInfo], widgets: Widgets,
-                 cacher: Cacher):
+                 datas: Datas, cacher: Cacher):
         for lab_but_info in label_button_infos:
             if (lab_but_info.key_bind is not None) and (lab_but_info.key_bind not in _ALLOWED_KEYS):
                 raise KeyError(f"{lab_but_info.key_bind.__repr__()} cannot be used as the shortcut key.")
@@ -32,6 +32,7 @@ class Manager:
         self.data_storage = data_storage
         self.wgs = widgets
         self.cacher = cacher
+        self.datas = datas
 
         self.stat = _Stat(
             win_size=(widgets.win.winfo_height(), widgets.win.winfo_width()),
@@ -68,7 +69,7 @@ class Manager:
     
     def recall_jump_button_press(self):
         try:
-            jump_idx = int(self.wgs.jump_entry.get())
+            jump_idx = int(self.wgs.jump_entry.get()) - 1
             self.stat.display_idx = min(max(jump_idx, 0), len(self.data_storage) - 1)
             self.wgs.jump_entry.delete(0, 'end')
             self._refresh(forced=True)
@@ -80,6 +81,7 @@ class Manager:
             if key == info.key_bind:
                 self.data_storage.set_label(self.stat.display_idx, info.label_val)
                 self.stat.need_refresh = True
+                self.data_storage.save(self.datas.storage_save_path)
                 break
 
     def _refresh(self, forced=False):
