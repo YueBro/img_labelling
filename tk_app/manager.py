@@ -10,7 +10,7 @@ from typing import List, Tuple, Optional, Any
 
 
 _DISALLOWED_STATES = 0b100000000000000101  # alt, ctrl, shift
-_ALLOWED_KEYS = set("qwertyuiopasdfghjklzxcvbnm")
+_ALLOWED_KEYS = set("abcdefghijklmnopqrstuvwxyz0123456789")
 _ARROW_KEYS = set(["left", "right"])
 _DIGITS = set("0123456789")
 

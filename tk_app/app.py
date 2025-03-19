@@ -9,6 +9,10 @@ from .consts import BUTTONS_WIDTH, JUMP_ENTRY_WIDTH, JUMP_BUTTON_WIDTH
 from typing import List, Tuple
 
 
+def _change_focus(event: tk.Event):
+    event.widget.focus_set()
+
+
 def start_app(data_storage: DataStorage, label_button_infos: List[LabelButtonInfo], storage_save_path: str,
               win_size: Tuple[int, int]=(1200, 800)):
     win = tk.Tk()
@@ -54,5 +58,6 @@ def start_app(data_storage: DataStorage, label_button_infos: List[LabelButtonInf
     win.bind("<KeyPress>", mgr.recall_key_press)
     win.bind("<KeyRelease>", mgr.recall_key_release)
     win.bind("<Configure>", mgr.recall_window_config)  # trigger when move or resize window
+    win.bind_all('<Button>', _change_focus)  # Allow deselecting widgets... just trivial stuffs
     jump_button.config(command=mgr.recall_jump_button_press)
     tk.mainloop()
