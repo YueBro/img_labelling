@@ -12,6 +12,7 @@ from typing import List, Tuple, Optional, Any
 _DISALLOWED_STATES = 0b100000000000000101  # alt, ctrl, shift
 _ALLOWED_KEYS = set("qwertyuiopasdfghjklzxcvbnm")
 _ARROW_KEYS = set(["left", "right"])
+_DIGITS = set("0123456789")
 
 
 @dataclass
@@ -33,6 +34,9 @@ class Manager:
         self.wgs = widgets
         self.cacher = cacher
         self.datas = datas
+
+        jumper_vcmd = (widgets.jump_entry.register(self._validcmd_jumper), '%S')
+        widgets.jump_entry.config(validate="key", validatecommand=jumper_vcmd)
 
         self.stat = _Stat(
             win_size=(widgets.win.winfo_height(), widgets.win.winfo_width()),
@@ -120,7 +124,11 @@ class Manager:
         return None
 
     def _update_notification(self, extra_str: Optional[str]=None):
-        txt = f"{self.stat.display_idx+1}/{len(self.data_storage)}"
+        has_label, img_path, label = self.data_storage.get_info(self.stat.display_idx)
+        txt = f"[{self.stat.display_idx+1}/{len(self.data_storage)}] {img_path}"
         if extra_str is not None:
             txt += " | " + extra_str
         self.wgs.notify_bar.config(text=txt)
+
+    def _validcmd_jumper(self, s: str):
+        return all((c in _DIGITS) for c in s)
